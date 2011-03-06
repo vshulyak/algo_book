@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   bigoh
+   scalability
+   resources
+
 Indices and tables
 ==================
 
