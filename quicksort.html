@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Семейство быстрых сортировок &mdash; Algo book v1.0 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Algo book v1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="id1">
+<h1>Семейство быстрых сортировок<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>Быстрая сортировка - это алгоритм сортировки, время работы которого для входного массива из n чисел в наихудшем случае равно tetta(n^2). Несмотря на такую медленную работу, в среднем время выполнения алгоритма намного лучше O(n^2).</p>
+<div class="section" id="id2">
+<h2>Описание быстрой сортировки<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Алгоритм быстрой сортировки основан на парадигме &#8220;разделяй и властвуй&#8221;. Процесс сортировки подмассива A[p...r] состоит из трех этапов:</p>
+<p><strong>Разделение</strong>
+Массив A[p...r] разбивается на два подмассива (путем переупорядочения его элементов) A[p...q-1] и A[q+1...r]. Каждый элемент в подмассиве A[p...q-1] не превышает значения элемента A[q]; элементы в подмассиве A[q+1...r] больше элемента A[q]. Индекс q вычисляется в ходе выполнения процедуры.</p>
+<p><strong>Покорение</strong>
+Подмассивы A[p...q-1] и A[q+1...r] сортируются путем вызова процедуры быстрой сортировки.</p>
+<p><strong>Комбинирование</strong>
+Поскольку подмассивы сортируются на месте, для их объединения не нужны никакие действия; весь массив A[p...r] оказывается отсортированным.</p>
+</div>
+<div class="section" id="java">
+<h2>Реализация алгоритма быстрой сортировки на языке Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a></h2>
+<p>Метод quicksort():</p>
+<div class="highlight-python"><pre>public void qsort(int p, int r){
+        if (p &lt; r){
+                int q = partition(p, r);
+                sort(p, q - 1);
+                sort(q + 1, r);
+        }
+}</pre>
+</div>
+<p>Метод разбиения массива partition(p,r):</p>
+<div class="highlight-python"><pre>private int partition(int p, int r){
+        int x = arr[r];
+        int i = p - 1;
+
+        for (j = p; j &lt; r - 1; j++){
+                if (arr[j] &lt;= x){
+                        ++i;
+                        int temp = arr[i];
+                        arr[i] = arr[j];
+                        arr[j] = temp;
+                }
+        }
+
+        int temp = arr[i+1];
+        arr[i+1] = arr[r];
+        arr[r] = temp;
+
+        return i + 1;
+}</pre>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>Анализ времени выполнения алгоритма быстрой сортировки<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Время выполнения алгоритма быстрой сортировки зависит от того, какой элемент выбран в качестве опорного (pivot) т.е. от <strong>степени сбалансированности</strong>. Если разбиение сбалансированное, то алгоритм работает так же быстро, как и сортировка слиянием, в противном случае время выполнения алгоритма такое же как и у алгоритма сортировки вставкой.</p>
+<div class="section" id="id4">
+<h3>Наихудшее разбиение<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Наихудшее разбиение имеет место быть, когда процедура разбиения возвращает два подмассива: один длиной 0 элементов, второй n-1.</p>
+<p>Рекуррентное соотношение, описывающее время работы процедуры сортировки массива:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">T</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">T</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Время, затрачиваемое на разделение массива на подмассивы равно Thetta(n), т.к. выполняется сравнение каждого элемента массива с значением опорного элемента n раз. Время выполнения процедуры quicksort(p,0) равно 0, т.к. процедура сразу же завершает свое выполнение. Методом подстановки T(n - 1) = &amp;Theta;(n-1) + T(n - 2) мы можем получить следующее выражение:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">T</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="o">...</span> <span class="o">=</span> <span class="n">Thetta</span><span class="p">(</span><span class="n">n</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Таким образом, если на каждом уровне рекурсии разбиение максимально несбалансированное, то время выполнения алгоритма быстрой сортировки равно Thetta(n^2).</p>
+<p>Примечание от автора:
+Думаю, что наихудшее разбиение возникает тогда, когда массив отсортирован в порядке убывания, а процедура сортировки выполняет сортировку такого массива по возрастанию. В этом случае опорный элемент становится минимальным, и следовательно процедура разбиения будет возвращать q = 1, что породит два подмассива, один длиной 0 элементов, другой n - 1 элементов.</p>
+</div>
+<div class="section" id="id5">
+<h3>Наилучшее разбиение<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>В самом благоприятном случае процедура разбиения массива делит задачу на две подзадачи, размер каждой из которых не превышает n/2. В этом случае алгоритм быстрой сортировки работает намного быстрее, время работы описывается следующим рекурректным уравнением:</p>
+<div class="highlight-python"><pre>T(n) &lt;= 2T(n/2) + Thetta(n)
+T(n) = O(n lgn)</pre>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Сбалансированное разбиение<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>Разбиение даже в соотношении девяносто девять к одному приводит к тому, что время выполнения алгоритма будет равно О(nlgn). Несмотря на то, что такое разбиение выглядит несбалансированным, в асимптотическом пределе алгоритм ведет себя так же, как и при делении задачи на две одинаковые подзадачи.</p>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>Рандомизированная быстрая сортировка<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>Исследуя поведение алгоритма быстрой сортировки в среднем случае, мы сделали предположение, что все элементы встречаются с равной вероятностью. Однако на практике это далеко не всегда так. Путем добавления этапа рандомизации можно получить среднюю производительность во всех случаях. Многие считают такую версию быстрой сортировки оптимальной для обработки больших массивов.</p>
+<div class="section" id="id8">
+<h3>Случайная выборка<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>Вместо того, чтобы в качестве опорного элемента подмассива выбирать всегда элемент arr[r], можно выбрать случайный элемент среди элементов с индексами от p до r. Благодаря случайному выбору опорного элемента, можно ожидать что разбиение в среднем случае окажется довольно сбалансированным.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>private int randomPartition(int p, int r){</dt>
+<dd><p class="first">int indexes = p - r;</p>
+<dl class="docutils">
+<dt>if (indexes &gt; 0){</dt>
+<dd><p class="first">int rnd = generator.nextInt(indexes);</p>
+<p class="last">int temp = arr[r];
+arr[r] = arr[rnd];
+arr[rnd] = temp;</p>
+</dd>
+</dl>
+<p>}</p>
+<p class="last">return partition(p, r);</p>
+</dd>
+</dl>
+<p>}</p>
+<dl class="docutils">
+<dt>private int randomPartition(int p, int r){</dt>
+<dd><p class="first">int indexes = p - r;</p>
+<dl class="docutils">
+<dt>if (indexes &gt; 0){</dt>
+<dd>int rnd = generator.nextInt(indexes);
+int temp = arr[r];
+arr[r] = arr[rnd];
+arr[rnd] = temp;</dd>
+</dl>
+<p>}</p>
+<p class="last">return partition(p, r);</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Семейство быстрых сортировок</a><ul>
+<li><a class="reference internal" href="#id2">Описание быстрой сортировки</a></li>
+<li><a class="reference internal" href="#java">Реализация алгоритма быстрой сортировки на языке Java</a></li>
+<li><a class="reference internal" href="#id3">Анализ времени выполнения алгоритма быстрой сортировки</a><ul>
+<li><a class="reference internal" href="#id4">Наихудшее разбиение</a></li>
+<li><a class="reference internal" href="#id5">Наилучшее разбиение</a></li>
+<li><a class="reference internal" href="#id6">Сбалансированное разбиение</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">Рандомизированная быстрая сортировка</a><ul>
+<li><a class="reference internal" href="#id8">Случайная выборка</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="sources/quicksort.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Vladimir Shulyak.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

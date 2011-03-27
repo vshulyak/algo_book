@@ -14,6 +14,7 @@ Contents:
    bigoh
    scalability
    resources
+   heap_sort
 
 Indices and tables
 ==================

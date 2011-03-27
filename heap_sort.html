@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Алгоритмы сортировки &mdash; Algo book v1.0 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Algo book v1.0 documentation" href="index.html" />
+    <link rel="prev" title="To Review" href="resources.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="resources.html" title="To Review"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="id1">
+<h1>Алгоритмы сортировки<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>Пирамидальная сортировка<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Пирамидальная сортировка основана на использовании структуры данных пирамида (heap). Это структура данных представляет собой бинарное дерево. Каждый узел дерева соответствует элементу массива. Последний уровень заполняется слева направо.</p>
+<p>Рассмотрим вспомогательные методы, которые использует пирамидальная сортировка.</p>
+<p>Метод Parent(i) возвращает индекс родительского узла i:</p>
+<div class="highlight-python"><pre>private int parent(int i){
+        return i/2;
+}</pre>
+</div>
+<p>Метод left(i) - получение индекса левого дочернего узла, где i - родительский узел:</p>
+<div class="highlight-python"><pre>private int left(int i){
+        return 2*i;
+}</pre>
+</div>
+<p>Метод right(i) - получение индекса правого дочернего узла, где i - родительский узел:</p>
+<div class="highlight-python"><pre>private int right(int i){
+        return 2*i + 1;
+}</pre>
+</div>
+<p>Замечание:
+Метод parent(i) возвращает наименьшее целое число, при передаче ему нечетного числа.</p>
+<dl class="docutils">
+<dt>Невозрастающая пирамида</dt>
+<dd>Пирамида является <strong>невозрастающей</strong> в том случае, когда значения дочерних узлов меньше, либо равны значению родительского узла.</dd>
+<dt>Неубывающая пирамида</dt>
+<dd>Пирамида является <strong>неубывающей</strong> в том случае, когда значения дочерних узлов больше, либо равны значению родительского узла.</dd>
+</dl>
+<p>Метод heapify(A,i) - поддерживает свойство невозрастающей пирамиды:</p>
+<div class="highlight-python"><pre>private void heapify(Integer i){
+        int largest;
+        int left = left(i);
+        int right = right(i);
+
+        if ((left &lt; heapSize) &amp;&amp; (arr[left] &gt; arr[i])){
+                largest = left;
+        }
+        else{
+                largest = i;
+        }
+
+        if ((right &lt; heapSize) &amp;&amp; (arr[right] &gt; arr[largest])){
+                largest = right;
+        }
+
+        if (i != largest){
+                int temp = arr[i];
+                arr[i] = arr[largest];
+                arr[largest] = temp;
+                this.heapify(largest);
+        }
+}</pre>
+</div>
+<p>В методе есть дополнительные проверки, типа (left &lt; heapSize) и (right &lt; heapSize). Методы left(i) и right(i) могут вернуть такой индекс, который не входит в пирамиду. Метод является рекурсивным, после обмена значениями дочерних узлов и родительского узла, повторно вызывается этот же метод, которому передается индекс узла с наибольшим значением.</p>
+<p>Конструктор Heap(A) - создает невозрастающую пирамиду из элементов массива:</p>
+<div class="highlight-python"><pre>public Heap(Integer A[]){
+        arr = A;
+        heapSize = A.length;
+
+        // создаем пирамиду
+        for (int i = arr.length/2 - 1; i &gt;= 0; i--){
+                heapify(i);
+        }
+}</pre>
+</div>
+<p>Функция heapSort(A) - пирамидальная сортировка.:</p>
+<div class="highlight-python"><pre>public void heapSort(){
+        int arrLength = heapSize;
+
+        for (int i = arrLength-1; i &gt;= 1; i--){
+                int temp = arr[0];
+                arr[0] = arr[i];
+                arr[i] = temp;
+
+                --heapSize;
+                heapify(0);
+        }
+}</pre>
+</div>
+<p>В теле цикла значениями обмениваются корневой узел пирамиды arr[0] и последний элемент пирамиды (leaf node). После чего, размер пирамиды уменьшается, узел таким образом отсекается, и вызывается метод поддержания свойства невозрастания пирамиды heapify(0). Вызов метод нужен потому, что в корне пирамиды после обмена содержится наименьшее значение.</p>
+</div>
+<div class="section" id="id3">
+<h2>Анализ времени выполнения алгоритма<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Метод left(i) выполняется очень быстро, путем битового сдвига числа i влево на одну позицию:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">i</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="mi">3</span> <span class="o">=</span> <span class="mi">110</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="mi">2</span> <span class="o">=</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<p>Метод right(i) тоже выполняется очень быстро, путем битового сдвига числа i влево на одну позицию и установки младшего бита в единицу:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">i</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">111</span>
+
+<span class="n">i</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">8</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">1001</span>
+</pre></div>
+</div>
+<p>Время работы метода heapify(i) в заданном узле i, вычисляется как время theta (1), необходимое для исправления отношений между элементами arr[i], arr[left(i)] или arr[right(i)], плюс время работы метода с поддеревом, корень которого находится в одном из дочерних узлов i. Время работы метода heapify(i) c узлом i, находящимся на высоте h, можно выразить как О(h) или O(lgn);</p>
+<p>Высота узла определяется как количество его предков. Высоту дерева определяют по высоте его узлов листьев (leaf nodes).</p>
+<p>Время работы метода heapsort() равно О(nlgn), поскольку вызов метода Heap() требует времени O(n), а каждый из n-1 вызовов метода heapify - времени O(lgn)</p>
+</div>
+<div class="section" id="id4">
+<h2>Сравнение со временем выполнения других алгоритмов сортировки<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Алгоритмы сортировки</a><ul>
+<li><a class="reference internal" href="#id2">Пирамидальная сортировка</a></li>
+<li><a class="reference internal" href="#id3">Анализ времени выполнения алгоритма</a></li>
+<li><a class="reference internal" href="#id4">Сравнение со временем выполнения других алгоритмов сортировки</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="resources.html"
+                        title="previous chapter">To Review</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="sources/heap_sort.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="resources.html" title="To Review"
+             >previous</a> |</li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Vladimir Shulyak.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
