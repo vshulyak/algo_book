@@ -15,6 +15,7 @@ Contents:
    scalability
    resources
    heap_sort
+   countsort.rst
 
 Indices and tables
 ==================
