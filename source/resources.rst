@@ -26,6 +26,7 @@ http://habrahabr.ru/blogs/algorithm/111858/
 http://habrahabr.ru/blogs/algorithm/112222/
 http://habrahabr.ru/blogs/algorithm/116236/
 http://habrahabr.ru/blogs/data_mining/116385/
+http://habrahabr.ru/blogs/algorithm/116725/
 
 http://www.slideshare.net/nathanmarz/the-secrets-of-building-realtime-big-data-systems
 http://www.designerterminal.com/inspiration/web-design/creative-blog-layouts.html
