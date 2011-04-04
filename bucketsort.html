@@ -1,0 +1,160 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Карманная сортировка &mdash; Algo book v1.0 documentation</title>
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Algo book v1.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="id1">
+<h1>Карманная сортировка<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>Если входные элементы подчиняются равномерному распределению, то время выполнения алгоритма карманной сортировки линейно зависит от количества входных данных. Если при сортировки методом подсчета предполагается, что входные данные целочисленны и положительны, то при карманной сортировке предполагается, что они равномерно распределены в интервале от [0, 1)/</p>
+<p>Идея, данного алгоритма заключается в том, чтобы разбить интервал от [0, 1) на n одинаковых интервалов, или карманов (buckets), а затем равномерно распределить по этим карманам n входных величин. Поскольку входные числа равномерно распределены в интервале [0,1), мы предполагаем, что в каждый из карманов попадет не много элементов. Чтобы получить выходную последовательность, нужно просто выполнить сортировку чисел в каждом кармане, а затем последовательно перечислить элементы каждого кармана.</p>
+<div class="section" id="java">
+<h2>Реализация алгоритма на Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>private double arr[];
+private LinkedList&lt;Double&gt; buckets[];
+
+public BucketSort(double array[]){
+        arr = array;
+}
+
+public LinkedList&lt;Double&gt; sort(){
+        int length = arr.length;
+        buckets = new LinkedList[arr.length];
+
+        for (int j = 0; j &lt; buckets.length; j++){
+                buckets[j] = new LinkedList&lt;Double&gt;();
+        }
+
+        for (int i = 0; i &lt; arr.length; i++){
+                int bucketIndex = (int) Math.floor((arr[i] * length));
+                buckets[bucketIndex].add(arr[i]);
+        }
+
+        // сортируем каждый список
+        for (int j = 0; j &lt; buckets.length; j++){
+                sortBucketElements(buckets[j]);
+        }
+
+        // объединяем элементы списков
+        return unionBuckets(buckets);
+}
+
+private void sortBucketElements(LinkedList&lt;Double&gt; list){
+
+        for (int j = 1; j &lt; list.size(); j++){
+                double key = list.get(j);
+                int i = j - 1;
+
+                while ((i &gt; -1) &amp;&amp; (list.get(i) &gt; key)){
+                        list.set(i + 1, list.get(i));
+                        --i;
+                }
+
+                list.set(i + 1, key);
+        }
+}
+
+private LinkedList&lt;Double&gt; unionBuckets(LinkedList&lt;Double&gt; buckets[]){
+        LinkedList&lt;Double&gt; outputList = new LinkedList&lt;Double&gt;();
+
+        for (int i = 0; i &lt; buckets.length; i++){
+                outputList.addAll(buckets[i]);
+        }
+
+        return outputList;
+}</pre>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>Анализ времени выполнения алгоритма<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Карманная сортировка</a><ul>
+<li><a class="reference internal" href="#java">Реализация алгоритма на Java</a></li>
+<li><a class="reference internal" href="#id2">Анализ времени выполнения алгоритма</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="sources/bucketsort.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">Algo book v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Vladimir Shulyak.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
