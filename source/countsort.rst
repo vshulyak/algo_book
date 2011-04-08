@@ -7,31 +7,61 @@
 		arr = array;
 	}	
 	
-	public int[] sort(int k){
-		int C[] = new int[k + 1];
+	public int[] sort(){
+		int C[] = new int[findMaxElement() + 1];
+		
 		// инициализируем вспомогательный массив C нулями
 		for (int i = 0; i < C.length; i++){
 			C[i] = 0;
 		}
 		
 		// подсчитываем частоту появления значения в входном массиве
-		for (int i = 0; i < arr.length; i++){
-			C[arr[i]] += 1;
+		for (int j = 0; j < arr.length; j++){
+			C[arr[j]] += 1;
 		}
 		
+		// индекс i массива С показывает, какое количество элементов не превышает i
 		for (int i = 1; i < C.length; i++){
 			C[i] = C[i - 1] + C[i];
 		}
 		
 		// используем вспомогательный массив B, в котором будет хранится отсортированная последовательность
-		int B[] = new int[arr.length + 1];
+		int B[] = new int[arr.length];
 		
-		for (int i = arr.length - 1; i >= 0; i--){
-			B[C[arr[i]]] = arr[i];
+		for (int i = arr.length-1; i >= 0; i--){
+			B[C[arr[i]]-1] = arr[i];
 			C[arr[i]] -= 1;
 		}
 		
 		return B;
+	}
+	
+	private int findMaxElement(){
+		int max = arr[0];
+		
+		for (int i = 0; i < arr.length; i++){
+			if (arr[i] > max){
+				max = arr[i];
+			}
+		}
+		
+		return max;
+	}
+
+Test case
+^^^^^^^^^^^^^^^^^^
+::
+
+	public class CountingSortTest {
+		@Test
+		public void testSort() {
+			int expected[] = {2, 3, 3, 5, 5, 8};
+			int test[] = {5,8,3,3,5,2};
+			CountingSort csort = new CountingSort(test);
+			int result[] = csort.sort();
+			assertArrayEquals(expected, result);
+		}
+
 	}
 
 В алгоритме сортировки подсчетом, используются два вспомогательных массива: массив C, в ячейках которого хранится число элементов, не превышающие i, где i - значение одного из элементов в исходном массиве и массив B, в котором хранится отсортированная последовательность. Переменная k определяет размер вспомогательного массива C, зависит от максимального значения в сортируемом массиве.
